@@ -3,7 +3,7 @@
   %form
     %div{:style => "float:right"}
       - if session["self"]
-        = "hi, #{session["self"]}"
+        = "hi, #{session["self"]}, #{session["access_token"]}"
       - else
         %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo"}
           log in
