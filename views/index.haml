@@ -15,12 +15,12 @@
     %h1 Ghest
     %h4 Milestone completion guesser for Github Issues
     %form
-      %div{:style => "float:right"}
+      %div
         - if session["self"]
           = "hi, #{session["self"]}, #{session["access_token"]}"
         - else
           %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo"}
-            log in
+            log in via oauth for access to private repos (token stored in session cookie)
       user:
       %input{:name=>"user", :value => params["user"]}
       repo:
