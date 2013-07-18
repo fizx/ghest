@@ -13,7 +13,7 @@ use Rack::Session::Cookie, :secret => ENV["COOKIE_SECRET"]
 get '/' do
   haml :index
   if params["repo"]
-    client = if session["code"]
+    client = if session["access_token"]
         Octokit::Client.new(:login => session["self"], :access_token => session["access_token"])
       else
         Octokit
