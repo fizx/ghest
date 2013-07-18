@@ -1,0 +1,10 @@
+%html
+  %body
+  %form{:action=>"/view"}
+    %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo", :style => "float:right"}
+      log in
+    user:
+    %input{:name=>"user"}
+    repo:
+    %input{:name=>"repo"}
+    %input{:type=>"submit"}
