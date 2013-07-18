@@ -28,5 +28,10 @@ get '/callback' do
       "client_secret" => CLIENT_SECRET,
       "code" => code
     }, :headers => { 'Accept' => 'application/json' } )
-    rsp.inspect
+  json = rsp.parsed_response
+  session["access_token"] = json["access_token"]
+  rsp = HTTParty.get("https://api.github.com/user?access_token=#{session["access_token"]}", 
+    :headers => { 'Accept' => 'application/json' } )
+  rsp.inspect
+  # redirect to("/")
 end
