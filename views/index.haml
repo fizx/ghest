@@ -1,44 +1,47 @@
 %html
+  %head
+    :css
+      table {
+        width:100%;
+        border:1px silver solid;
+      }
+      th {
+        background-color: silver
+      }
+      td, th {
+        padding: 5px
+      }
   %body
-  :css
-    table {
-      width:100%;
-      border:1px silver solid;
-    }
-    th {
-      background-color: silver
-    }
-    td, th {
-      padding: 5px
-    }
-  %form
-    %div{:style => "float:right"}
-      - if session["self"]
-        = "hi, #{session["self"]}, #{session["access_token"]}"
-      - else
-        %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo"}
-          log in
-    user:
-    %input{:name=>"user", :value => params["user"]}
-    repo:
-    %input{:name=>"repo", :value => params["repo"]}
-    %input{:type=>"submit"}
-  - if @issues
-    %table"}
-      %tr
-        %th
-          Name
-        %th
-          Estimated completion time
-        %th
-          Highly optimistic completion time
-      - @issues.each do |milestone, issues|
+    %h1 Ghest
+    %h4 Milestone completion guesser for Github Issues
+    %form
+      %div{:style => "float:right"}
+        - if session["self"]
+          = "hi, #{session["self"]}, #{session["access_token"]}"
+        - else
+          %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo"}
+            log in
+      user:
+      %input{:name=>"user", :value => params["user"]}
+      repo:
+      %input{:name=>"repo", :value => params["repo"]}
+      %input{:type=>"submit"}
+    - if @issues
+      %table"}
         %tr
-          %td
-            = milestone.title
-          %td
-            = milestone.estimated_completion || "Indefinite"
-          %td
-            = milestone.optimistic_completion || "Indefinite"
+          %th
+            Name
+          %th
+            Estimated completion time
+          %th
+            Highly optimistic completion time
+        - @issues.each do |milestone, issues|
+          %tr
+            %td
+              = milestone.title
+            %td
+              = milestone.estimated_completion || "Indefinite"
+            %td
+              = milestone.optimistic_completion || "Indefinite"
           
           
