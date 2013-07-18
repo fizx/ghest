@@ -1,5 +1,13 @@
 %html
   %body
+  :css
+    table {
+      width:100%;
+      border:1px silver solid;
+    }
+    td {
+      padding: 5px
+    }
   %form
     %div{:style => "float:right"}
       - if session["self"]
@@ -13,7 +21,7 @@
     %input{:name=>"repo", :value => params["repo"]}
     %input{:type=>"submit"}
   - if @issues
-    %table
+    %table"}
       %th
         %td
           Name
