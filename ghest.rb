@@ -13,7 +13,7 @@ get '/' do
   haml :index
   if params["repo"]
     client = if session["code"]
-        Octokit::Client.new(:login => session["self"], session["access_token"])
+        Octokit::Client.new(:login => session["self"], :access_token => session["access_token"])
       else
         Octokit
       end
