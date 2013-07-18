@@ -27,6 +27,6 @@ get '/callback' do
       "client_id" => CLIENT_ID,
       "client_secret" => CLIENT_SECRET,
       "code" => code
-    })
+    }, :headers => { 'Accept' => 'application/json' } )
     rsp.inspect
 end
