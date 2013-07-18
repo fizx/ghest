@@ -14,7 +14,7 @@ get '/' do
   haml :index
   if params["repo"]
     client = if session["access_token"]
-        Octokit::Client.new(:login => session["self"], :access_token => session["access_token"])
+        Octokit::Client.new(:login => session["self"], :oauth_token => session["access_token"])
       else
         Octokit
       end
