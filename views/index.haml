@@ -5,7 +5,10 @@
       width:100%;
       border:1px silver solid;
     }
-    td {
+    th {
+      background-color: silver
+    }
+    td, th {
       padding: 5px
     }
   %form
@@ -22,12 +25,12 @@
     %input{:type=>"submit"}
   - if @issues
     %table"}
-      %th
-        %td
+      %tr
+        %th
           Name
-        %td
+        %th
           Estimated completion time
-        %td
+        %th
           Highly optimistic completion time
       - @issues.each do |milestone, issues|
         %tr
