@@ -3,6 +3,7 @@ require "rack/session/cookie"
 require "haml"
 require "time"
 require "httparty"
+require "octokit"
 
 CLIENT_ID = ENV["CLIENT_ID"]
 CLIENT_SECRET = ENV["CLIENT_SECRET"]
@@ -66,7 +67,7 @@ get '/' do
     end;nil
     @issues = issues
   end
-  haml :view
+  haml :index
 end
 
 get '/callback' do
