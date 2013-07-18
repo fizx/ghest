@@ -13,12 +13,12 @@ get '/' do
 end
 
 get '/view' do
-  client = if session["code"]
-      Octokit::Client.new(:login => "me", :oauth_token => "oauth2token")
+  repo= if session["code"]
+      Octokit::Client.new(:login => session["self"], session["access_token"]).repo
     else
       Octokit.repo params["user"] + "/" + params["repo"]
     end
-    
+  repo.inspect
 end
 
 get '/callback' do
@@ -33,5 +33,6 @@ get '/callback' do
   rsp = HTTParty.get("https://api.github.com/user?access_token=#{session["access_token"]}", 
     :headers => { 'Accept' => 'application/json' } )
   rsp.inspect
-  # redirect to("/")
+  session["self"] = rsp.parsed_response["login"]
+  redirect to("/")
 end
