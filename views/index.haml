@@ -1,13 +1,32 @@
 %html
   %body
-  %form{:action=>"/view"}
+  %form
     - if session["self"]
       = "hi, #{session["self"]}"
     - else
       %a{:href=>"https://github.com/login/oauth/authorize?client_id=#{CLIENT_ID}&scope=repo", :style => "float:right"}
         log in
     user:
-    %input{:name=>"user"}
+    %input{:name=>"user", :value => params["user"]}
     repo:
-    %input{:name=>"repo"}
+    %input{:name=>"repo", :value => params["repo"]}
     %input{:type=>"submit"}
+  - if @issues
+    %table
+      %th
+        %td
+          Name
+        %td
+          Estimated completion time
+        %td
+          Highly optimistic completion time
+      - @issues.each do |milestone, issues|
+        %tr
+          %td
+            = milestone.title
+          %td
+            = milestone.estimated_completion || "Indefinite"
+          %td
+            = milestone.optimistic_completion || "Indefinite"
+          
+          

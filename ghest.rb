@@ -1,6 +1,7 @@
 require 'sinatra'
 require "rack/session/cookie"
 require "haml"
+require "time"
 require "httparty"
 
 CLIENT_ID = ENV["CLIENT_ID"]
@@ -10,15 +11,62 @@ use Rack::Session::Cookie, :secret => ENV["COOKIE_SECRET"]
 
 get '/' do
   haml :index
-end
-
-get '/view' do
-  repo= if session["code"]
-      Octokit::Client.new(:login => session["self"], session["access_token"]).repo
-    else
-      Octokit.repo params["user"] + "/" + params["repo"]
+  if params["repo"]
+    client = if session["code"]
+        Octokit::Client.new(:login => session["self"], session["access_token"])
+      else
+        Octokit
+      end
+    name = params["user"] + "/" + params["repo"]
+    issues = (client.issues(name, :state => "open") + client.issues(name, :state => "closed")).group_by(&:milestone)
+    issues.each do |m, v|
+      issues.delete(m) if m.nil? || m.state == "closed" || v.nil?
     end
-  repo.inspect
+  
+    issues.each do |milestone, related|
+      start = Time.now - 2*7*24*60*60
+      delta = Time.now - start
+      total_open = milestone.open_issues
+      creates = []
+      closes = []
+      related.each do |issue|
+        creates << Time.parse(issue.created_at)
+        if issue.closed_at
+          closes << Time.parse(issue.closed_at)
+        end
+      end
+    
+      recent_opened = creates.select{|s| s >= start }.size
+      recent_closed = closes.select{|s| s >= start }.size
+      rate = (recent_closed - recent_opened) / delta
+      puts "rate: #{milestone.title} #{recent_closed} - #{recent_opened}"
+    
+      optclose = 0
+      optopen = 0
+      opttime = start
+      (1..closes.size).each do |i|
+        close = closes[-i]
+        later_opens = creates.select{|s| s >= close }.size
+        if i > later_opens
+          optclose = i
+          optopen = later_opens
+          opttime = close
+        end
+      end
+      if optclose > 0
+        best_rate = (optclose - optopen) / (Time.now - opttime)
+        puts "optimist: #{best_rate}"
+        milestone.optimistic_completion = Time.now + total_open / best_rate.to_f 
+      end
+      puts rate
+      # puts best_rate
+      if rate > 0
+        milestone.estimated_completion = Time.now + total_open / rate.to_f 
+      end
+    end;nil
+    @issues = issues
+  end
+  haml :view
 end
 
 get '/callback' do
